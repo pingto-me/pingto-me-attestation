@@ -4,6 +4,9 @@ pragma solidity ^0.8.19;
 import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
 import { IERC20 } from "@openzeppelin/contracts/interfaces/IERC20.sol";
 import { ISPHook } from "@ethsign/sign-protocol-evm/src/interfaces/ISPHook.sol";
+import { Attestation } from "@ethsign/sign-protocol-evm/src/models/Attestation.sol";
+import { ISP } from "@ethsign/sign-protocol-evm/src/interfaces/ISP.sol";
+
 
 // @dev This contract manages the whitelist. We are separating the whitelist logic from the hook to make things easier
 // to read.
@@ -17,6 +20,7 @@ contract NFTHodlManager is Ownable {
      address hodl;
      bool isactive;
     }
+
 
     constructor() Ownable(_msgSender()) { }
 
@@ -35,7 +39,12 @@ contract NFTHodlManager is Ownable {
         // solhint-disable-next-line custom-errors
         
          CertInfo storage cert = pingCert[attsid_];
-        require(address(cert.hodl)!=address(0), "No certificate found");
+         if(address(cert.hodl)!=address(0))
+         {
+            require(cert.isactive, "Certificate is invalid");
+            require(cert.isactive, "Certificate is invalid");
+         }
+
     }
 
     function _checkPingtoEnable(address hodl) internal view {
@@ -46,20 +55,30 @@ contract NFTHodlManager is Ownable {
 
 // @dev This contract implements the actual schema hook.
 contract HodlChallangeHook is ISPHook, NFTHodlManager {
+    struct CertSchema {
+     address hodladdr;
+     address nftaddr;
+     uint256 tokenid;
+     string nfttype;
+     uint256 chainid;
+    }
     function didReceiveAttestation(
-        address hodl,
+        address, // attester
         uint64, // schemaId
-        uint64, // attestationId
+        uint64 attestationId,
         bytes calldata // extraData
+
     )
         external
         payable
-    {
-        _checkPingtoEnable(hodl);
-    }
+      {
+        Attestation memory attestation = ISP(_msgSender()).getAttestation(attestationId);
+        require(!attestation.revoked, " Attestation is revoked");
+        _checkCertificate(attestationId);
+      }
 
-    function didReceiveAttestation(
-        address hodl,
+     function didReceiveAttestation(
+        address, // attester
         uint64, // schemaId
         uint64, // attestationId
         IERC20, // resolverFeeERC20Token
@@ -67,13 +86,13 @@ contract HodlChallangeHook is ISPHook, NFTHodlManager {
         bytes calldata // extraData
     )
         external
-        view
+        pure
     {
-        _checkPingtoEnable(hodl);
+        revert ("Unsupport");
     }
 
     function didReceiveRevocation(
-        address hodl,
+        address, // attester
         uint64, // schemaId
         uint64, // attestationId
         bytes calldata // extraData
@@ -81,11 +100,11 @@ contract HodlChallangeHook is ISPHook, NFTHodlManager {
         external
         payable
     {
-        _checkPingtoEnable(hodl);
+        revert ();
     }
 
     function didReceiveRevocation(
-        address hodl,
+        address, // attester
         uint64, // schemaId
         uint64, // attestationId
         IERC20, // resolverFeeERC20Token
@@ -93,8 +112,8 @@ contract HodlChallangeHook is ISPHook, NFTHodlManager {
         bytes calldata // extraData
     )
         external
-        view
+        pure
     {
-        _checkPingtoEnable(hodl);
+        revert ();
     }
 }
