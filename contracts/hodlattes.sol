@@ -52,10 +52,10 @@ contract HodlAttester is Ownable {
         return schema.data;   
     }
     
-    function getAttestation(uint64 attestationId) external view returns (Attestation memory)
+    function getAttestation(uint64 attestationId) external view returns (bool)
     {
         Attestation memory attestation = spInstance.getAttestation(attestationId);
-        return abi.decode(attestation.data,(Attestation));
+        return attestation.revoked;
     }
 
 
