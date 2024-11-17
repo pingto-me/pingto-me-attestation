@@ -19,3 +19,6 @@ https://testnet-scan.sign.global/schema/onchain_evm_84532_0x4a0
 
 ### Attestion Smart Contract
 https://sepolia.basescan.org/address/0x72929ac7D542B5Cc6B539bd9FE36A3218B42aa48
+
+### Schema Hook Smart Contract
+https://sepolia.basescan.org/address/0x32Cc36F33724E8cccB26168Bc13E1792054aC7e3
