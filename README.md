@@ -1,4 +1,14 @@
 # Sign Protocal Attestation : pingto.me certification
+# How to work
+### Create NFT Ownership certificate
+
+<img width="670" alt="Screen Shot 2567-11-17 at 10 10 29" src="https://github.com/user-attachments/assets/d5606504-a116-4cfc-82a2-e56780d8cf6b">
+
+### Challenge NFT Ownership
+
+<img width="708" alt="Screen Shot 2567-11-17 at 10 16 31" src="https://github.com/user-attachments/assets/4889f91b-804c-40b3-bac9-2a1391ae1494">
+
+
 
 
 ## Schema Detail
